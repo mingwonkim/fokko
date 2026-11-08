@@ -33,38 +33,68 @@ private extension BreakAttributes.ContentState {
   }
 }
 
+/// 잠금 화면 카드. StandBy(충전 중 가로)에서 화면 전체로 커지면 숫자 중심 배치.
+struct LockCard: View {
+  let s: BreakAttributes.ContentState
+  var body: some View {
+    if #available(iOS 17, *) {
+      StandByAware(s: s)
+    } else {
+      CardLayout(s: s, full: false)
+    }
+  }
+}
+
+@available(iOS 17, *)
+private struct StandByAware: View {
+  let s: BreakAttributes.ContentState
+  @Environment(\.isActivityFullscreen) private var full
+  var body: some View { CardLayout(s: s, full: full) }
+}
+
+private struct CardLayout: View {
+  let s: BreakAttributes.ContentState
+  let full: Bool
+  var body: some View {
+    let ring = full ? 128.0 : 100.0
+    HStack(spacing: full ? 28 : 16) {
+      if full { Spacer(minLength: 0) }
+      ZStack {
+        Circle().fill(Color(argb: s.card)).padding(ring * 0.09)
+        if let img = companionImage(s.companion) {
+          Image(uiImage: img).resizable().scaledToFit().padding(ring * 0.2)
+        }
+        ringView(s, size: ring, width: ring * 0.12)
+      }
+      .frame(width: ring, height: ring)
+      VStack(alignment: .leading, spacing: 0) {
+        Label(s.head, systemImage: s.icon)
+          .font(.subheadline.weight(.bold))
+          .foregroundStyle(Color(argb: s.ring))
+        clock(s)
+          .font(.system(size: full ? 84 : 60, weight: .heavy, design: .rounded))
+          .minimumScaleFactor(0.5)
+          .lineLimit(1)
+        if !full, let sub = s.sub {
+          Text(sub).font(.subheadline.weight(.semibold)).lineLimit(1)
+        }
+      }
+      Spacer(minLength: 0)
+    }
+    .foregroundStyle(Color(argb: s.text))
+  }
+}
+
 struct BreakActivityWidget: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: BreakAttributes.self) { ctx in
       let s = ctx.state
-      let text = Color(argb: s.text)
-      HStack(spacing: 18) {
-        ZStack {
-          Circle().fill(Color(argb: s.card)).padding(10)
-          if let img = companionImage(s.companion) {
-            Image(uiImage: img).resizable().scaledToFit().padding(22)
-          }
-          ring(s, size: 118, width: 12)
-        }
-        .frame(width: 118, height: 118)
-        VStack(alignment: .leading, spacing: 2) {
-          Label(s.head, systemImage: s.icon)
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(Color(argb: s.ring))
-          clock(s)
-            .font(.system(size: 46, weight: .bold, design: .rounded))
-            .minimumScaleFactor(0.6)
-            .lineLimit(1)
-          if let sub = s.sub {
-            Text(sub).font(.subheadline.weight(.semibold)).lineLimit(1).opacity(0.85)
-          }
-        }
-        Spacer(minLength: 0)
-      }
-      .foregroundStyle(text)
-      .padding(16)
-      .activityBackgroundTint(Color(argb: s.card).opacity(0.55))
-      .activitySystemActionForegroundColor(text)
+      LockCard(s: s)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 14)
+        // 잠금 화면 배경이 살짝 비치되 글자·링은 또렷하게 (0.55는 바다·숲에서 숫자가 묻혔음: 실사용 11/08)
+        .activityBackgroundTint(Color(argb: s.card).opacity(0.8))
+        .activitySystemActionForegroundColor(Color(argb: s.text))
     } dynamicIsland: { ctx in
       let s = ctx.state
       let tint = Color(argb: s.ring)
@@ -81,50 +111,50 @@ struct BreakActivityWidget: Widget {
           }
         }
       } compactLeading: {
-        ring(s, size: 20, width: 3)
+        ringView(s, size: 20, width: 3)
       } compactTrailing: {
         clock(s).frame(width: 44).multilineTextAlignment(.trailing).foregroundStyle(tint)
       } minimal: {
-        ring(s, size: 20, width: 3)
+        ringView(s, size: 20, width: 3)
       }
     }
   }
+}
 
-  private func companionImage(_ id: String) -> UIImage? {
-    guard !id.isEmpty,
-          let path = Bundle.main.path(forResource: id, ofType: "png", inDirectory: "companions")
-    else { return nil }
-    return UIImage(contentsOfFile: path)
+func companionImage(_ id: String) -> UIImage? {
+  guard !id.isEmpty,
+        let path = Bundle.main.path(forResource: id, ofType: "png", inDirectory: "companions")
+  else { return nil }
+  return UIImage(contentsOfFile: path)
+}
+
+/// 진행 중: 시스템이 직접 줄여 주는 카운트다운 (앱이 꺼져 있어도 흐름) / 일시정지: 멈춘 시각
+func clock(_ s: BreakAttributes.ContentState) -> Text {
+  if let sec = s.pausedSec {
+    return Text(String(format: "%d:%02d", sec / 60, sec % 60)).monospacedDigit()
   }
+  return Text(timerInterval: Date()...max(s.endsAt, Date()), countsDown: true).monospacedDigit()
+}
 
-  /// 진행 중: 시스템이 직접 줄여 주는 카운트다운 (앱이 꺼져 있어도 흐름) / 일시정지: 멈춘 시각
-  private func clock(_ s: BreakAttributes.ContentState) -> Text {
-    if let sec = s.pausedSec {
-      return Text(String(format: "%d:%02d", sec / 60, sec % 60)).monospacedDigit()
+/// 앱의 굵은 링. 진행 중엔 시스템 타이머 링이라 앱이 꺼져 있어도 차오른다.
+@ViewBuilder
+func ringView(_ s: BreakAttributes.ContentState, size: CGFloat, width: CGFloat) -> some View {
+  let color = Color(argb: s.ring)
+  ZStack {
+    if s.paused || s.totalSec <= 0 {
+      Circle().stroke(color.opacity(0.22), lineWidth: width) // 시스템 타이머 링의 바탕과 비슷하게
+      Circle()
+        .trim(from: 0, to: s.pausedFraction)
+        .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
+        .rotationEffect(.degrees(-90))
+    } else {
+      ProgressView(timerInterval: s.startedAt...max(s.endsAt, s.startedAt.addingTimeInterval(1)),
+                   countsDown: !s.focus,
+                   label: { EmptyView() },
+                   currentValueLabel: { EmptyView() })
+        .progressViewStyle(.circular)
+        .tint(color) // 바탕 원은 시스템이 tint로 그린다
     }
-    return Text(timerInterval: Date()...max(s.endsAt, Date()), countsDown: true).monospacedDigit()
   }
-
-  /// 앱의 굵은 링. 진행 중엔 시스템 타이머 링이라 앱이 꺼져 있어도 차오른다.
-  @ViewBuilder
-  private func ring(_ s: BreakAttributes.ContentState, size: CGFloat, width: CGFloat) -> some View {
-    let color = Color(argb: s.ring)
-    ZStack {
-      if s.paused || s.totalSec <= 0 {
-        Circle().stroke(Color(argb: s.track), lineWidth: width)
-        Circle()
-          .trim(from: 0, to: s.pausedFraction)
-          .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
-          .rotationEffect(.degrees(-90))
-      } else {
-        ProgressView(timerInterval: s.startedAt...max(s.endsAt, s.startedAt.addingTimeInterval(1)),
-                     countsDown: !s.focus,
-                     label: { EmptyView() },
-                     currentValueLabel: { EmptyView() })
-          .progressViewStyle(.circular)
-          .tint(color) // 바탕 원은 시스템이 tint로 그린다
-      }
-    }
-    .frame(width: size, height: size)
-  }
+  .frame(width: size, height: size)
 }

@@ -117,8 +117,8 @@ class SessionNotifier {
         'title': title,
         if (paused) 'pausedSec': remaining,
         'totalSec': s.totalSeconds,
-        'ring': style.ringProgress.toARGB32(),
-        'track': style.ringTrack.toARGB32(),
+        // 링·머리글은 강조색 — 옅은 ringProgress는 잠금 화면에서 묻힌다
+        'ring': style.accent.toARGB32(),
         'card': style.cardBg.toARGB32(),
         'text': style.textStrong.toARGB32(),
         'companion': companion.id,
