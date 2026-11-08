@@ -121,6 +121,7 @@ Future<void> runMobile() async {
   // 앱으로 돌아오면 잠금 권한과 못 보낸 리그 세션을 다시 본다
   AppLifecycleListener(onResume: () {
     refreshLock();
+    sound.recheckEarphones();
     leagueSync?.sync();
   });
 

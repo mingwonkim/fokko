@@ -100,7 +100,9 @@ final class FocusLock: NSObject, FlutterPlugin {
     // 앱 재실행으로 같은 잠금을 다시 걸면 예약은 그대로 둔다 — stopMonitoring이 확장의 intervalDidEnd를
     // 불러 방금 건 잠금까지 풀어 버렸음 (재실행할 때마다 잠금 풀림: 실사용 11/08)
     if defaults.string(forKey: "activeSessionId") == sessionId,
-       abs(defaults.double(forKey: "endsAt") - endsAt.timeIntervalSince1970) < 60 {
+       abs(defaults.double(forKey: "endsAt") - endsAt.timeIntervalSince1970) < 60,
+       let active = defaults.string(forKey: "activeActivity"),
+       center.activities.contains(.init(active)) {
       Self.applyShield(sel)
       return true
     }

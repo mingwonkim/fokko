@@ -3,7 +3,7 @@ import Flutter
 import Foundation
 
 /// 남은 시간 Live Activity(집중·휴식) 시작·종료. 채널: focusone/break
-/// start {endsAt: ms, focus, title, pausedSec?} — 이미 떠 있으면 내용만 바꿈 / end
+/// start {endsAt: ms, focus, title, pausedSec?, totalSec, ring, track, card, text, companion} — 이미 떠 있으면 내용만 바꿈 / end
 enum BreakActivity {
   static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "focusone/break", binaryMessenger: registrar.messenger())
@@ -17,7 +17,13 @@ enum BreakActivity {
           endsAt: Date(timeIntervalSince1970: ms / 1000),
           focus: args["focus"] as? Bool ?? false,
           title: args["title"] as? String ?? "",
-          pausedSec: args["pausedSec"] as? Int))
+          pausedSec: args["pausedSec"] as? Int,
+          totalSec: args["totalSec"] as? Int ?? 0,
+          ring: args["ring"] as? Int ?? 0xFF4F8D6D,
+          track: args["track"] as? Int ?? 0xFFDCEEE3,
+          card: args["card"] as? Int ?? 0xFFEEF7F1,
+          text: args["text"] as? Int ?? 0xFF162D22,
+          companion: args["companion"] as? String ?? ""))
       case "end":
         end()
       default:

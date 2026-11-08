@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../models/collection.dart';
 import '../state/app_state.dart';
 
 /// 폰: 세션 종료 시각에 로컬 알림 1개. 일시정지·그만두기·완료면 취소, 재개하면 다시 예약.
@@ -94,20 +95,33 @@ class SessionNotifier {
     }
     final focus = s.phase == FocusPhase.focus;
     final paused = focus && !s.isRunning;
-    final title = focus ? s.activeSession!.taskTitle : '';
+    final full = focus ? s.activeSession!.taskTitle : '';
+    // Live Activity 내용은 4KB 제한 — 넘으면 카드가 조용히 안 뜬다
+    final title = full.length > 80 ? '${full.substring(0, 80)}…' : full;
     final endsAt = DateTime.now().add(Duration(seconds: remaining));
     // 매 초 호출되니 표시가 실제로 바뀐 경우(시작·일시정지·재개·시간 변경)만 다시 띄운다
-    final kind = '${focus ? 'focus' : 'break'}:$paused:$title';
+    // 앱 링과 같은 친구: 진행 중엔 세션에 고정된 친구
+    // 색도 그 친구의 장면에서 — 캐릭터와 카드 색이 어긋나지 않게
+    final companion =
+        Companion.byId(s.activeSession?.companionId) ?? s.selectedCompanion;
+    final kind = '${focus ? 'focus' : 'break'}:$paused:$title:${companion.id}';
     final ref = paused ? remaining : endsAt.millisecondsSinceEpoch ~/ 1000;
     if (kind == _liveKind && (ref - _liveRef).abs() < 3) return;
     _liveKind = kind;
     _liveRef = ref;
     if (Platform.isIOS) {
+      final style = companion.scene.style;
       await _liveChannel.invokeMethod('start', {
         'endsAt': endsAt.millisecondsSinceEpoch.toDouble(),
         'focus': focus,
         'title': title,
         if (paused) 'pausedSec': remaining,
+        'totalSec': s.totalSeconds,
+        'ring': style.ringProgress.toARGB32(),
+        'track': style.ringTrack.toARGB32(),
+        'card': style.cardBg.toARGB32(),
+        'text': style.textStrong.toARGB32(),
+        'companion': companion.id,
       });
       return;
     }

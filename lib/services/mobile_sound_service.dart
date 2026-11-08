@@ -1,4 +1,6 @@
 // lib/services/mobile_sound_service.dart
+// AudioDeviceType은 audio_session에서 실험 표시 — 버전은 pubspec.lock에 고정
+// ignore_for_file: experimental_member_use
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
@@ -13,10 +15,13 @@ class MobileSoundService {
   double _volume = 1;
   // 이어폰이 끊겨 소리를 죽인 상태. 멈추지 않고 무음으로 계속 재생해야 iOS가 앱을 재우지 않아
   // 화면이 꺼진 채로도 이어폰이 다시 붙을 때 알아챈다 (멈추면 그때부터 안 남: 실사용 11/08).
+  // 이어폰이 다시 잡히거나 사용자가 소리를 다시 켜면 풀린다. 다시 켤 땐 iOS가 연결된 블루투스로 보내고,
+  // 아무것도 안 붙어 있을 때만 스피커로 나온다.
   bool _muted = false;
+  AudioSession? _session; // init 실패 시 null
 
   Future<void> init() async {
-    final session = await AudioSession.instance;
+    final session = _session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playback,
       // 다른 음악과 섞어 들을 수 있게 (집중 소리는 배경음)
@@ -32,21 +37,43 @@ class MobileSoundService {
     session.interruptionEventStream.listen((e) {
       if (!e.begin && _want != null && _want == _loaded) _player.play();
     });
-    // 이어폰 분리: just_audio가 멈추면(스피커로 새지 않게) 무음으로 다시 돌리고, 출력 장치가 붙으면 소리를 되살린다
+    // 이어폰 분리: just_audio가 멈춘 뒤 무음으로 다시 돌린다
     session.becomingNoisyEventStream.listen((_) async {
       if (_want == null) return;
       _muted = true;
       await _player.setVolume(0);
-      await Future<void>.delayed(const Duration(milliseconds: 300)); // just_audio의 pause가 먼저 끝나게
+      // just_audio도 같은 알림에 pause를 건다 — 그게 먼저 끝난 뒤 다시 돌린다
+      await _player.playingStream
+          .firstWhere((p) => !p)
+          .timeout(const Duration(seconds: 1), onTimeout: () => false);
       if (_muted && _want != null && _want == _loaded) _player.play();
     });
-    session.devicesChangedEventStream.listen((e) {
-      if (!_muted || !e.devicesAdded.any((d) => d.isOutput)) return;
-      _muted = false;
-      _player.setVolume(_volume);
-      if (_want != null && _want == _loaded && !_player.playing) _player.play();
-    });
+    session.devicesChangedEventStream.listen((_) => recheckEarphones());
     await _player.setLoopMode(LoopMode.one);
+  }
+
+  /// 이어폰이 끊겨 죽인 소리를, 이어폰(폰 스피커·수화부가 아닌 출력)이 지금 잡혀 있으면 되살린다.
+  /// 장치 변화 알림이 빠질 수 있어 앱으로 돌아올 때도 부른다.
+  Future<void> recheckEarphones() async {
+    final session = _session;
+    if (!_muted || session == null) return;
+    final Set<AudioDevice> outs;
+    try {
+      outs = await session.getDevices(includeInputs: false);
+    } catch (e) {
+      debugPrint('sound devices: $e');
+      return;
+    }
+    const phone = {
+      AudioDeviceType.builtInSpeaker,
+      AudioDeviceType.builtInEarpiece,
+      AudioDeviceType.telephony,
+      AudioDeviceType.unknown,
+    };
+    if (!_muted || !outs.any((d) => d.isOutput && !phone.contains(d.type))) return;
+    _muted = false;
+    await _player.setVolume(_volume);
+    if (_want != null && _want == _loaded && !_player.playing) _player.play();
   }
 
   Future<void> setVolume(double v) async {
@@ -59,8 +86,7 @@ class MobileSoundService {
   void set(String? asset) {
     if (asset == _want) return;
     _want = asset;
-    if (_muted) {
-      // 사용자가 소리를 껐다 켜거나 세션이 바뀌면 지금 장치(스피커 포함)로 정상 재생
+    if (asset != null && _muted) {
       _muted = false;
       _player.setVolume(_volume);
     }

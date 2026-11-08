@@ -324,6 +324,7 @@
 				8659B7BD07278CD51B490DA3 /* Sources */,
 				93C11B97F433F5A46E09A7DA /* Frameworks */,
 				3D10BE28BC2DE927B5F1F28B /* Resources */,
+				F0C0A1B2C3D4E5F60718293A /* Copy Companions */,
 			);
 			buildRules = (
 			);
@@ -444,6 +445,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+		};
+		F0C0A1B2C3D4E5F60718293A /* Copy Companions */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Companions";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "out=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/companions\"\nmkdir -p \"$out\"\nfor f in \"$SRCROOT/../assets/mobile/companions/\"*.webp; do\n  n=$(basename \"$f\" .webp)\n  [ \"$out/$n.png\" -nt \"$f\" ] || sips -s format png -Z 192 \"$f\" --out \"$out/$n.png\" >/dev/null\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
