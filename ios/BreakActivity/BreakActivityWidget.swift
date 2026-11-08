@@ -143,6 +143,13 @@ func badge(_ s: BreakAttributes.ContentState, size: CGFloat) -> some View {
       Image(uiImage: img).resizable().scaledToFit().padding(size * 0.15)
     }
     ringView(s, size: size, width: size * 0.13)
+    // 눌러서 펼친다는 표시 — 원 밖엔 그릴 수 없어 오른쪽 아래에 겹친다
+    Image(systemName: "arrow.up.left.and.arrow.down.right")
+      .font(.system(size: size * 0.2, weight: .heavy))
+      .foregroundStyle(.black)
+      .frame(width: size * 0.4, height: size * 0.4)
+      .background(Circle().fill(Color(argb: s.ring)))
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
   }
   .frame(width: size, height: size)
 }
