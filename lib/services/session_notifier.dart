@@ -22,6 +22,16 @@ class SessionNotifier {
   String? _scheduledFor; // "세션ID@종료시각" — 같은 예약 반복 방지
   bool _asked = false;
 
+  /// iOS 잠금 화면 남은 시간(실시간 현황)이 켜져 있는지. Android·구버전 iOS는 true(안내할 것 없음)
+  static Future<bool> liveActivitiesEnabled() async {
+    if (!Platform.isIOS) return true;
+    try {
+      return await _liveChannel.invokeMethod<bool>('enabled') ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
+
   Future<void> init() async {
     tzdata.initializeTimeZones();
     await _plugin.initialize(

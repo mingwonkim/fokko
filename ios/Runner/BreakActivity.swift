@@ -3,6 +3,7 @@ import Flutter
 import Foundation
 
 /// 남은 시간 Live Activity(집중·휴식) 시작·종료. 채널: focusone/break
+/// enabled → 잠금 화면 표시 허용 여부
 /// start {endsAt: ms, focus, title, pausedSec?, totalSec, ring, card, text, companion} — 이미 떠 있으면 내용만 바꿈 / end
 enum BreakActivity {
   static func register(with registrar: FlutterPluginRegistrar) {
@@ -25,6 +26,8 @@ enum BreakActivity {
           companion: args["companion"] as? String ?? ""))
       case "end":
         end()
+      case "enabled":
+        return result(ActivityAuthorizationInfo().areActivitiesEnabled)
       default:
         return result(FlutterMethodNotImplemented)
       }

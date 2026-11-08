@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/design_tokens.dart';
 import '../../core/scene_decorations.dart';
 import '../../models/collection.dart';
 import '../../features/mini/widgets/focus_ring.dart' show formatClock;
+import '../../services/session_notifier.dart';
 import '../../state/app_state.dart';
 import '../adaptive.dart';
 import '../lock/lock_page.dart';
@@ -319,18 +321,28 @@ class _ToolRow extends StatelessWidget {
   }
 }
 
-/// 시작. 잠금을 켜 뒀는데 걸 수 없으면 집중은 시작하되 바로 알려 준다.
-void _startFocus(BuildContext context, AppState s) {
+/// 시작. 잠금을 켜 뒀는데 걸 수 없거나, 잠금 화면 남은 시간(실시간 현황)이 꺼져 있으면
+/// 집중은 시작하되 바로 알려 준다.
+Future<void> _startFocus(BuildContext context, AppState s) async {
   s.startTimer(allowNoTask: true);
+  final messenger = ScaffoldMessenger.maybeOf(context);
+  void show(String text, [SnackBarAction? action]) => messenger?.showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      // 시작 10초 동안만 있는 취소 버튼을 가리지 않게 위로 띄운다
+      margin: const EdgeInsets.only(
+          left: MobileSize.gutter,
+          right: MobileSize.gutter,
+          bottom: MobileSize.cta * 2),
+      content: Text(text),
+      action: action));
   if (s.lockEnabled && !s.lockReady) {
-    // 시작 10초 동안만 있는 취소 버튼을 가리지 않게 위로 띄운다
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(const SnackBar(
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.only(
-            left: MobileSize.gutter,
-            right: MobileSize.gutter,
-            bottom: MobileSize.cta * 2),
-        content: Text('앱 잠금이 꺼져 있어요. 자물쇠에서 권한을 확인해 주세요')));
+    show('앱 잠금이 꺼져 있어요. 자물쇠에서 권한을 확인해 주세요');
+    return;
+  }
+  // 잠금 화면의 '허용 안 함'은 다시 묻지 않아 iOS 설정에서만 켤 수 있다
+  if (!await SessionNotifier.liveActivitiesEnabled()) {
+    show('잠금 화면에 남은 시간 보기가 꺼져 있어요',
+        SnackBarAction(label: '켜기', onPressed: () => launchUrl(Uri.parse('app-settings:'))));
   }
 }
 
