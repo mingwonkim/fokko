@@ -192,6 +192,17 @@ void main() {
       again.dispose();
     });
 
+    test('연속 집중 배너: 이어진 날의 첫 완료에만', () async {
+      var st = await boot(day(0));
+      st = await focus(st, day(0), 25);
+      expect(st.lastStreakExtended, isNull, reason: '첫날은 연속이 아님');
+      st = await focus(st, day(1), 25);
+      expect(st.lastStreakExtended, 2);
+      st = await focus(st, day(1, 15), 25);
+      expect(st.lastStreakExtended, isNull, reason: '오늘은 이미 이어짐');
+      st.dispose();
+    });
+
     test('주간 목표: 얼음 지급, 이번 주 합산, 다음 주는 새로', () async {
       var st = await boot(monday);
       st = await focus(st, day(0), 60);

@@ -265,42 +265,50 @@ void main() {
         await _png(tester, key, '$out/${d.name}/$name.png', d.ratio);
       }
 
-      // 1) 숲 · 집중 중 (50분 중 18분 경과)
+      // 장면 4개를 고르게: 숲 01·06, 바다 02·03, 밤 04·08, 일상 05·07
+      // 1) 숲 · 집중 중 (50분 중 18분 경과). 기록 없이 버린다 — 03의 연속 배너가 오늘 첫 완료에 뜨게
       s.setDurationMinutes(50);
       await _settle(tester);
       s.startTimer();
       await tester.pump(const Duration(minutes: 18, seconds: 24));
       await shot('01_focus', '할 일 딱 하나,\n집중한 만큼 차올라요', 'ADHD를 위한 싱글 태스크 집중 타이머');
+      s.stopTimer();
+      await _settle(tester);
 
-      // 2) 집중 완료 → 친구 보상
-      await tester.pump(const Duration(minutes: 32));
-      await shot('02_reward', '집중하면\n새 친구가 찾아와요', '끝까지 해낸 만큼 물방울도 모여요');
+      // 2) 바다 · 집중 중 → 3) 완료 + 연속 집중 배너
+      s.setScene(FocusScene.ocean);
+      s.setDurationMinutes(25);
+      await _settle(tester);
+      s.startTimer();
+      await tester.pump(const Duration(minutes: 14, seconds: 10));
+      await shot('02_ocean', '바다 속으로\n깊이 몰입해요', '물고기 · 기포 · 파도 소리가 함께 차올라요');
+      await tester.pump(const Duration(minutes: 11));
+      await shot('03_streak', '매일 이어 가면\n친구가 함께 기뻐해요', '연속 집중 배너 · 새 친구 · 물방울 보상');
       await tester.tap(find.byTooltip('닫기').last);
       await _settle(tester);
 
-      // 3) 성장 지도 · 퀘스트
+      // 4) 밤 · 성장 지도  5) 일상 · 퀘스트
+      s.setScene(FocusScene.night);
       await _tapTab(tester, '성장');
-      await shot('03_growth', '집중할수록\n레벨이 올라요', '칭호마다 색이 바뀌는 성장 지도');
+      await shot('04_growth', '집중할수록\n레벨이 올라요', '칭호마다 색이 바뀌는 성장 지도');
+      s.setScene(FocusScene.daily);
       await tester.tap(find.textContaining('퀘스트').first);
       await _settle(tester);
-      await shot('04_quests', '오늘의 퀘스트로\n매일 조금씩', '달성하면 상자 속 물방울과 얼음');
+      await shot('05_quests', '오늘의 퀘스트로\n매일 조금씩', '달성하면 상자 속 물방울과 얼음');
 
-      // 5) 꾸미기
+      // 6) 숲 · 꾸미기
+      s.setScene(FocusScene.forest);
       await _tapTab(tester, '꾸미기');
-      await shot('05_scenery', '모은 친구로\n나만의 풍경 꾸미기', '친구 36종, 집중할수록 하나씩 만나요');
+      await shot('06_scenery', '모은 친구로\n나만의 풍경 꾸미기', '친구 36종, 집중할수록 하나씩 만나요');
 
-      // 6) 기록
-      await _tapTab(tester, '기록');
-      await shot('06_records', '집중한 시간이\n한눈에 쌓여요', '연속 기록 · 태그별 시간 · 골든타임');
-
-      // 7) 밤 장면 · 앱 잠금 안내
+      // 7) 일상(카페) · 집중 중 · 앱 잠금
+      s.setScene(FocusScene.daily);
       await _tapTab(tester, '집중');
-      s.setScene(FocusScene.night);
       s.setDurationMinutes(30);
       await _settle(tester);
       s.startTimer();
-      await tester.pump(const Duration(minutes: 7, seconds: 41));
-      await shot('07_night', '집중하는 동안\n딴 앱은 잠가요', '밤바람 · 귀뚜라미 소리와 함께 몰입');
+      await tester.pump(const Duration(minutes: 12, seconds: 41));
+      await shot('07_daily', '카페 · 도서관 · 기차,\n어디서든 내 집중 자리', '집중하는 동안 딴 앱은 잠가요');
       await tester.pump(const Duration(minutes: 60));
       await _settle(tester);
       if (find.byTooltip('닫기').evaluate().isNotEmpty) {
@@ -308,10 +316,10 @@ void main() {
         await _settle(tester);
       }
 
-      // 8) 할 일
-      s.setScene(FocusScene.ocean);
-      await _tapTab(tester, '할 일');
-      await shot('08_tasks', '떠오른 생각은\n적어 두고 다시 집중', '할 일 · 생각 메모 · 태그');
+      // 8) 밤 · 경쟁
+      s.setScene(FocusScene.night);
+      await _tapTab(tester, '경쟁');
+      await shot('08_compete', '친구와 겨루며\n함께 자라요', '1:1 대결 · 랭킹 · 연속 기록');
 
       s.dispose();
       debugDisableShadows = true;
@@ -494,7 +502,7 @@ void main() {
 
     // 6) 기록 (천천히 스크롤)
     say('집중한 시간이\n한눈에 쌓여요', '연속 기록 · 태그별 시간 · 골든타임');
-    await tap(find.text('기록').last);
+    await tap(find.text('경쟁').last);
     await hold(0.8);
     // 터치 인식 임계값(18px)을 넘겨야 스크롤이 시작된다 → 한 제스처로 이어서 끌기
     final g = await tester.startGesture(tester.getCenter(find.byType(Scrollable).first));

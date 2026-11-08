@@ -12,7 +12,7 @@ import 'profile_card.dart';
 
 enum _Period { day, week, month, year }
 
-/// 기록 탭 (spec §2): 연속일 → 일/주/월/년·기간 이동 → 시간/횟수 → 막대 → 태그 → 잔디 → 골든타임 → 세션
+/// 경쟁 탭 (spec §2, 옛 이름 기록): 연속일 → 일/주/월/년·기간 이동 → 시간/횟수 → 막대 → 태그 → 잔디 → 골든타임 → 세션
 class RecordsTab extends StatefulWidget {
   const RecordsTab({super.key});
 
@@ -117,7 +117,7 @@ class _RecordsTabState extends State<RecordsTab> {
           height: MobileSize.headerMinHeight,
           child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('기록',
+              child: Text('경쟁',
                   style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,

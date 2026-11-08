@@ -67,7 +67,7 @@ class _MobileShellState extends State<MobileShell> with WidgetsBindingObserver {
     MobileTab.focus: ('집중', Icons.timer_outlined),
     MobileTab.growth: ('성장', Icons.route_rounded),
     MobileTab.scenery: ('꾸미기', Icons.park_outlined),
-    MobileTab.records: ('기록', Icons.bar_chart_rounded),
+    MobileTab.records: ('경쟁', Icons.emoji_events_rounded),
     MobileTab.tasks: ('할 일', Icons.check_circle_outline),
   };
 

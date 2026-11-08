@@ -686,6 +686,7 @@ class AppState extends ChangeNotifier {
     final focused =
         outcome == SessionOutcome.completed ? a.plannedSec : a.focusedSec(now);
     final titleBefore = title;
+    final focusedBefore = _activeDays.contains(dayKey(now));
     _sessions.add(FocusSession(
       id: a.id,
       taskId: a.taskId,
@@ -710,6 +711,8 @@ class AppState extends ChangeNotifier {
           owned: owned, drops: _progress.drops + focused ~/ 60);
       _lastReward = _sessions.last;
       _lastPromotion = title != titleBefore ? title : null;
+      final streak = _growth.streak(dayKey(now), _activeDays);
+      _lastStreakExtended = !focusedBefore && streak >= 2 ? streak : null;
       // 빠진 날을 먼저 판단한다 — 이번 보상으로 받은 얼음이 지난 공백에 쓰이지 않게
       _progress = _progress.copyWith(
           growth: _growth.settled(dayKey(now), _activeDays));
@@ -756,8 +759,13 @@ class AppState extends ChangeNotifier {
       : _progress.owned[itemId] ?? 0;
   FocusSession? get lastReward => _lastReward;
   FocusTitle? get lastPromotion => _lastPromotion;
+
+  /// 방금 완료로 연속일이 이어졌으면 그 일수 (오늘 첫 완료 · 2일 이상). 연속 배너용.
+  int? get lastStreakExtended => _lastStreakExtended;
+  int? _lastStreakExtended;
   void clearLastReward() {
     _lastReward = null;
+    _lastStreakExtended = null;
     _lastPromotion = null;
     _lastQuestRewards = const [];
     notifyListeners();

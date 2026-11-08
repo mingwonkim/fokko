@@ -10,6 +10,10 @@ abstract class AppColors {
   static const onPrimary = Color(0xFFFFFFFF);
   static const error = Color(0xFFFF3B30); // iOS 레드
   static const success = Color(0xFF34C759); // iOS 그린
+  // 연속 집중 배너 불꽃 (장면과 무관하게 같은 주황)
+  static const streakTop = Color(0xFFFFB020);
+  static const streakBottom = Color(0xFFFF6A00);
+  static const streakDim = Color(0x55FFFFFF); // 비어 있는 날 점
 }
 
 /// 화면 분위기 모드: 숲 / 밤 / 바다 / 일상. 각 모드는 스타일 + 앰비언트 사운드를 가진다.
@@ -319,6 +323,7 @@ abstract class AppDuration {
   static const enter = Duration(milliseconds: 200);
   static const transition = Duration(milliseconds: 280);
   static const titleSpin = Duration(seconds: 6); // 높은 칭호 테두리 한 바퀴
+  static const streakHop = Duration(milliseconds: 1400); // 연속 배너 친구 세 번 뛰기
 }
 
 /// 칭호 칸 테두리에 두르는 장식 모양
@@ -448,6 +453,9 @@ abstract class MobileSize {
   static const double leagueIconLarge = 40;
   static const double leagueRank = 28;
   static const double streakIcon = 56;
+  static const double streakBannerFriend = 88;
+  static const double streakHop = 22; // 친구가 뛰는 높이
+  static const double streakDot = 26;
   static const double weekCell = 36;
   static const double taskCard = 72;
   static const double tabBar = 64;

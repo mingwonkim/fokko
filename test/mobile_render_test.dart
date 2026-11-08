@@ -34,7 +34,7 @@ void main() {
         ));
         await tester.pump();
         expect(tester.takeException(), isNull, reason: '$name $scene 집중');
-        for (final tab in ['성장', '할 일', '기록', '꾸미기', '집중']) {
+        for (final tab in ['성장', '할 일', '경쟁', '꾸미기', '집중']) {
           await tester.tap(find.text(tab).last);
           await tester.pump();
           expect(tester.takeException(), isNull, reason: '$name $scene $tab');

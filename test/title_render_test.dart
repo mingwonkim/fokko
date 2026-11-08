@@ -113,4 +113,51 @@ void main() {
     expect(tester.takeException(), isNull);
     a.dispose();
   });
+
+  testWidgets('연속으로 집중한 날엔 보상 시트 맨 위에 연속 배너', (tester) async {
+    final dir = Directory.systemTemp.createTempSync('fo');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final file = File('${dir.path}/d.json');
+    final d1 = DateTime(2026, 11, 4, 9);
+    final d2 = d1.add(const Duration(days: 1));
+    // 이틀 연달아 25분 완료 (앱을 껐다 켜서 복구 경로로 확정)
+    final a = (await tester.runAsync(() async {
+      Future<AppState> run(DateTime at) async {
+        final st = AppState(LocalStore(file));
+        await withClock(Clock.fixed(at), st.init);
+        withClock(Clock.fixed(at), () {
+          st.setDurationMinutes(25);
+          st.startTimer(allowNoTask: true);
+        });
+        await st.flush();
+        st.dispose();
+        final again = AppState(LocalStore(file));
+        await withClock(Clock.fixed(at.add(const Duration(hours: 1))), again.init);
+        return again;
+      }
+
+      (await run(d1)).dispose();
+      return run(d2);
+    }))!;
+    expect(a.lastStreakExtended, 2);
+
+    await withClock(Clock.fixed(d2.add(const Duration(hours: 1))), () async {
+      await tester.pumpWidget(ChangeNotifierProvider.value(
+        value: a,
+        child: MaterialApp(
+          home: Builder(
+            builder: (ctx) => TextButton(
+                onPressed: () => showRewardSheet(ctx), child: const Text('열기')),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('열기'));
+      await tester.pumpAndSettle();
+    });
+    expect(find.text('2일 연속 집중!'), findsOneWidget);
+    expect(find.text('연속 2일'), findsNothing, reason: '배너가 있으면 줄 표시는 뺀다');
+    expect(find.byIcon(Icons.check_rounded), findsNWidgets(2));
+    expect(tester.takeException(), isNull);
+    a.dispose();
+  });
 }

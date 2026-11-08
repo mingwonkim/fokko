@@ -1,5 +1,8 @@
 // lib/mobile/focus/sheets.dart
 // 집중 홈의 하단 시트들: 할 일 / 태그 / 친구 / 딴생각 메모 / 보상
+import 'dart:math' as math;
+
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -381,7 +384,9 @@ Future<void> showRewardSheet(BuildContext context) {
   final c = Companion.byId(r.companionId);
   final drops = (r.focusedSec ?? 0) ~/ 60;
   final promoted = s.lastPromotion;
-  promoted != null ? HapticFeedback.heavyImpact() : HapticFeedback.mediumImpact();
+  promoted != null || s.lastStreakExtended != null
+      ? HapticFeedback.heavyImpact()
+      : HapticFeedback.mediumImpact();
   return showFocusSheet(context, '집중 완료', (ctx) {
     final style = s.scene.style;
     final reduce = MediaQuery.maybeDisableAnimationsOf(ctx) ?? false;
@@ -392,6 +397,11 @@ Future<void> showRewardSheet(BuildContext context) {
         Text('${r.minutes}분 동안 집중했어요',
             style: TextStyle(fontSize: 13, color: style.textMuted)),
         const SizedBox(height: 12),
+        if (s.lastStreakExtended case final days?) ...[
+          _StreakBanner(
+              days: days, asset: c?.asset ?? '', state: s, reduce: reduce),
+          const SizedBox(height: 12),
+        ],
         if (promoted != null) ...[
           _Promotion(style: style, title: promoted, asset: c?.asset ?? ''),
           const SizedBox(height: 12),
@@ -441,8 +451,10 @@ Future<void> showRewardSheet(BuildContext context) {
             },
           ),
         ],
-        const SizedBox(height: 8),
-        _RewardRow(style: style, text: '연속 ${s.streakDays}일'),
+        if (s.lastStreakExtended == null) ...[
+          const SizedBox(height: 8),
+          _RewardRow(style: style, text: '연속 ${s.streakDays}일'),
+        ],
         if (c != null &&
             CompanionStage.of(s.companionMinutes(c.id) - r.minutes) !=
                 s.companionStage(c.id)) ...[
@@ -493,6 +505,118 @@ Future<void> showRewardSheet(BuildContext context) {
       ]),
     );
   }).whenComplete(s.clearLastReward);
+}
+
+/// 연속 집중 배너 (듀오링고 연속 화면 참고): 친구가 세 번 뛰고 불꽃이 커진다.
+/// 오늘 첫 완료로 연속일이 이어졌을 때만 보상 시트 맨 위에 뜬다.
+class _StreakBanner extends StatelessWidget {
+  const _StreakBanner(
+      {required this.days,
+      required this.asset,
+      required this.state,
+      required this.reduce});
+  final int days;
+  final String asset;
+  final AppState state;
+  final bool reduce;
+
+  static const _milestones = {3, 7, 14, 30, 50, 100, 180, 365};
+
+  @override
+  Widget build(BuildContext context) {
+    final milestone = _milestones.contains(days);
+    final today = dayKey(clock.now());
+    const text = AppColors.onPrimary;
+    return Semantics(
+      label: '$days일 연속 집중',
+      excludeSemantics: true,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(MobileSize.cardPadding),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [AppColors.streakTop, AppColors.streakBottom]),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: reduce ? 1 : 0, end: 1),
+          duration: reduce ? Duration.zero : AppDuration.streakHop,
+          builder: (_, v, __) {
+            // 점점 낮아지는 세 번 뛰기 + 착지 때 살짝 눌림
+            final hop = (math.sin(v * 3 * math.pi)).abs() * (1 - v);
+            final squash = 1 + 0.08 * (1 - hop) * (1 - v);
+            return Column(children: [
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                if (asset.isNotEmpty)
+                  Transform.translate(
+                    offset: Offset(0, -MobileSize.streakHop * hop),
+                    child: Transform.scale(
+                      scaleX: squash,
+                      scaleY: 2 - squash,
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(asset,
+                          width: MobileSize.streakBannerFriend,
+                          height: MobileSize.streakBannerFriend),
+                    ),
+                  ),
+                Transform.scale(
+                  scale: Curves.easeOutBack.transform(v.clamp(0, 1)),
+                  child: const Icon(Icons.local_fire_department_rounded,
+                      size: MobileSize.streakIcon, color: text),
+                ),
+                Text('$days',
+                    style: const TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w800,
+                        color: text,
+                        fontFeatures: [FontFeature.tabularFigures()])),
+              ]),
+              Text(milestone ? '$days일 연속 달성!' : '$days일 연속 집중!',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800, color: text)),
+              const SizedBox(height: MobileSize.labelGap),
+              Text('내일도 집중하면 ${days + 1}일이 돼요',
+                  style: const TextStyle(fontSize: 14, color: text)),
+              const SizedBox(height: MobileSize.cardGap),
+              // 최근 7일: 집중한 날·얼음 쓴 날은 채움, 오늘은 굵게
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                for (var i = 6; i >= 0; i--)
+                  Builder(builder: (_) {
+                    final d = addDays(today, -i);
+                    final on = state.activeDays.contains(d) ||
+                        state.iceDays.contains(d);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: Container(
+                        width: MobileSize.streakDot,
+                        height: MobileSize.streakDot,
+                        decoration: BoxDecoration(
+                          color: on ? text : AppColors.streakDim,
+                          shape: BoxShape.circle,
+                          border: i == 0
+                              ? Border.all(color: text, width: 2)
+                              : null,
+                        ),
+                        child: on
+                            ? Icon(
+                                state.iceDays.contains(d)
+                                    ? Icons.ac_unit_rounded
+                                    : Icons.check_rounded,
+                                size: 16,
+                                color: AppColors.streakBottom)
+                            : null,
+                      ),
+                    );
+                  }),
+              ]),
+            ]);
+          },
+        ),
+      ),
+    );
+  }
 }
 
 /// 승급 축하: 새 테두리 아바타 팝 + 새 칭호 + 자랑하기
