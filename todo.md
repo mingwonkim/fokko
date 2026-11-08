@@ -86,6 +86,7 @@
   - [x] 주소: 비상주 사무실 안 함 — 하루전(개인 계정, 인앱 구매)에 이미 공개돼 있음
   - [x] D-U-N-S 신청 제출 (2026-10-13, Apple duns-lookup 무료, 사업자 주소) → 발급 1~2주 대기, 안내 메일 develop@looinlabs.com
   - [x] D-U-N-S 재신청 제출 — 2026-11-06 D&B Apple 지원 양식, 사건 #34993712, 영문 사업자등록증 첨부, 상호 looin labs. 안내: 해외 7~14영업일. 회신 develop@looinlabs.com(Safari Gmail u/1). 다음: 번호 받으면 Play 조직 계정 가입
+  - [ ] 11/08 확인: develop@ 받은편지함·스팸함에 D&B 메일 없음(접수 확인 메일도 없음). 예상 회신 11/17~11/26
   - 이전 거절 기록: 10/16 D&B 답: 'D-U-N-S Number could not be created / Required documents not provided'. 회사 존재 확인 불가, 홈택스 영문 사업자등록증 사본 요구(추적 11045680, 사건 11104000, 요청 키 BYFVC73Y96). 메일 회신 불가 주소라 제출 경로 확인 필요
   - 주의: 조직 계정은 법적 주소·개발자 전화·이메일이 Play에 공개됨(숨김 불가, D&B 기록과 일치 필요). Fokko는 번호 결과 전까지 개인 계정에 앱 만들기 금지(패키지 이름 선점 방지)
   - [ ] Play 조직 계정 가입($25 사용자 결제) → 서비스 계정 API 키 ~/.config/fokko/
