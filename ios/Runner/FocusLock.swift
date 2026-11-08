@@ -6,7 +6,7 @@ import SwiftUI
 import UIKit
 
 /// 집중 중 앱 잠금 (Family Controls). 채널: focusone/lock
-/// - 선택한 앱 목록·진행 세션 ID는 App Group에 저장 → FocusMonitor 확장이 Flutter 없이 해제한다.
+/// - 선택한 앱 목록·진행 세션 ID·해제 예약 이름은 App Group에 저장 → FocusMonitor 확장이 Flutter 없이 해제한다.
 /// - DeviceActivity 최소 감시 구간 15분 → 15분 미만 세션은 잠그지 않는다(Dart 쪽에서 막음).
 final class FocusLock: NSObject, FlutterPlugin {
   static let group = "group.com.looinlabs.focusone"
@@ -97,6 +97,16 @@ final class FocusLock: NSObject, FlutterPlugin {
   private func start(sessionId: String, endsAt: Date) -> Bool {
     let sel = loadSelection()
     guard selectionCount(sel) > 0, endsAt.timeIntervalSinceNow >= Self.minLockSec else { return false }
+    // 앱 재실행으로 같은 잠금을 다시 걸면 예약은 그대로 둔다 — stopMonitoring이 확장의 intervalDidEnd를
+    // 불러 방금 건 잠금까지 풀어 버렸음 (재실행할 때마다 잠금 풀림: 실사용 11/08)
+    if defaults.string(forKey: "activeSessionId") == sessionId,
+       abs(defaults.double(forKey: "endsAt") - endsAt.timeIntervalSince1970) < 60 {
+      Self.applyShield(sel)
+      return true
+    }
+    // 예약 이름을 바꿔 먼저 저장 → 아래 stopMonitoring이 부르는 지난 예약의 intervalDidEnd는 이름이 달라 무시된다
+    let activity = "focus.\(sessionId).\(Int(endsAt.timeIntervalSince1970))"
+    defaults.set(activity, forKey: "activeActivity")
     center.stopMonitoring() // 이전 세션 예약 제거 → 오래된 콜백이 새 잠금을 풀지 못함
     let cal = Calendar.current
     let comps: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]
@@ -106,8 +116,9 @@ final class FocusLock: NSObject, FlutterPlugin {
       repeats: false)
     // 해제 예약이 먼저 — 예약이 성공한 뒤에만 잠근다(그 사이 앱이 죽어도 '잠금만 남는' 상태가 없게)
     do {
-      try center.startMonitoring(.init("focus.\(sessionId)"), during: schedule)
+      try center.startMonitoring(.init(activity), during: schedule)
     } catch {
+      stop() // 지난 예약도 지웠으니 남은 잠금도 푼다
       return false
     }
     defaults.set(sessionId, forKey: "activeSessionId")
@@ -117,6 +128,7 @@ final class FocusLock: NSObject, FlutterPlugin {
   }
 
   private func stop() {
+    defaults.removeObject(forKey: "activeActivity")
     center.stopMonitoring()
     defaults.removeObject(forKey: "activeSessionId")
     defaults.removeObject(forKey: "endsAt")

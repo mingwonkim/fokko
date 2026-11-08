@@ -13,10 +13,11 @@ import '../state/app_state.dart';
 class SessionNotifier {
   final _plugin = FlutterLocalNotificationsPlugin();
   static const _id = 1;
-  static const _breakId = 2;
-  static const _breakChannel = MethodChannel('focusone/break');
-  // 휴식 남은 시간 표시 중이면 종료 시각. 처음엔 '모름'으로 두어 앱이 꺼진 사이 남은 표시를 첫 동기화에서 정리
-  DateTime? _breakShown = DateTime(0);
+  static const _liveId = 2;
+  static const _liveChannel = MethodChannel('focusone/break'); // 이름은 휴식 전용이던 때 그대로
+  // 지금 띄운 남은 시간 표시(종류·기준값). 처음엔 '모름'으로 두어 앱이 꺼진 사이 남은 표시를 첫 동기화에서 정리
+  String? _liveKind = '?';
+  int _liveRef = 0;
   String? _scheduledFor; // "세션ID@종료시각" — 같은 예약 반복 방지
   bool _asked = false;
 
@@ -36,7 +37,7 @@ class SessionNotifier {
 
   /// AppState 변화마다 호출
   Future<void> sync(AppState s) async {
-    await _syncBreak(s);
+    await _syncLive(s);
     final a = s.activeSession;
     if (a == null || !a.isRunning) {
       if (_scheduledFor != null) {
@@ -77,40 +78,58 @@ class SessionNotifier {
         ?.requestNotificationsPermission();
   }
 
-  /// 휴식 중: iOS는 Dynamic Island·잠금 화면(Live Activity), Android는 줄어드는 시계 알림
-  Future<void> _syncBreak(AppState s) async {
-    if (s.phase != FocusPhase.breakTime) {
-      if (_breakShown == null) return;
-      _breakShown = null;
+  /// 잠금 화면에 남은 시간 — 집중(진행·일시정지)·휴식.
+  /// iOS는 Dynamic Island·잠금 화면(Live Activity), Android는 줄어드는 시계 알림.
+  Future<void> _syncLive(AppState s) async {
+    final remaining = s.remainingSeconds;
+    if (s.phase == FocusPhase.idle || remaining <= 0) {
+      if (_liveKind == null) return;
+      _liveKind = null;
       if (Platform.isIOS) {
-        await _breakChannel.invokeMethod('end');
+        await _liveChannel.invokeMethod('end');
       } else {
-        await _plugin.cancel(id: _breakId);
+        await _plugin.cancel(id: _liveId);
       }
       return;
     }
-    final endsAt = DateTime.now().add(Duration(seconds: s.remainingSeconds));
-    // 매 초 호출되니 시각이 실제로 바뀐 경우(휴식 시작·시간 변경)만 다시 띄운다
-    if (_breakShown != null && endsAt.difference(_breakShown!).inSeconds.abs() < 3) return;
-    _breakShown = endsAt;
+    final focus = s.phase == FocusPhase.focus;
+    final paused = focus && !s.isRunning;
+    final title = focus ? s.activeSession!.taskTitle : '';
+    final endsAt = DateTime.now().add(Duration(seconds: remaining));
+    // 매 초 호출되니 표시가 실제로 바뀐 경우(시작·일시정지·재개·시간 변경)만 다시 띄운다
+    final kind = '${focus ? 'focus' : 'break'}:$paused:$title';
+    final ref = paused ? remaining : endsAt.millisecondsSinceEpoch ~/ 1000;
+    if (kind == _liveKind && (ref - _liveRef).abs() < 3) return;
+    _liveKind = kind;
+    _liveRef = ref;
     if (Platform.isIOS) {
-      await _breakChannel.invokeMethod('start', {'endsAt': endsAt.millisecondsSinceEpoch.toDouble()});
+      await _liveChannel.invokeMethod('start', {
+        'endsAt': endsAt.millisecondsSinceEpoch.toDouble(),
+        'focus': focus,
+        'title': title,
+        if (paused) 'pausedSec': remaining,
+      });
       return;
     }
+    final head = focus ? (paused ? '일시정지' : '집중 중') : '휴식 중';
     await _plugin.show(
-      id: _breakId,
-      title: '휴식 중',
-      body: '끝나면 다시 집중해요',
+      id: _liveId,
+      title: title.isEmpty ? head : '$head · $title',
+      body: paused
+          ? '남은 시간 ${remaining ~/ 60}분 ${remaining % 60}초'
+          : (focus ? '끝나면 알려 드릴게요' : '끝나면 다시 집중해요'),
       notificationDetails: NotificationDetails(
-        android: AndroidNotificationDetails('break', '휴식 남은 시간',
+        android: AndroidNotificationDetails(
+            focus ? 'focus' : 'break', focus ? '집중 남은 시간' : '휴식 남은 시간',
             importance: Importance.low,
+            visibility: NotificationVisibility.public, // 잠금 화면에서도 내용까지
             ongoing: true,
             onlyAlertOnce: true,
-            showWhen: true,
+            showWhen: !paused,
             when: endsAt.millisecondsSinceEpoch,
-            usesChronometer: true,
+            usesChronometer: !paused,
             chronometerCountDown: true,
-            timeoutAfter: s.remainingSeconds * 1000),
+            timeoutAfter: paused ? null : remaining * 1000),
       ),
     );
   }

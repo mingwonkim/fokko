@@ -2,8 +2,8 @@ import ActivityKit
 import Flutter
 import Foundation
 
-/// 휴식 Live Activity 시작·종료. 채널: focusone/break
-/// start {endsAt: ms} — 이미 떠 있으면 시각만 바꿈 / end
+/// 남은 시간 Live Activity(집중·휴식) 시작·종료. 채널: focusone/break
+/// start {endsAt: ms, focus, title, pausedSec?} — 이미 떠 있으면 내용만 바꿈 / end
 enum BreakActivity {
   static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "focusone/break", binaryMessenger: registrar.messenger())
@@ -11,8 +11,13 @@ enum BreakActivity {
       guard #available(iOS 16.2, *) else { return result(nil) }
       switch call.method {
       case "start":
-        let ms = (call.arguments as? [String: Any])?["endsAt"] as? Double ?? 0
-        start(Date(timeIntervalSince1970: ms / 1000))
+        let args = call.arguments as? [String: Any] ?? [:]
+        let ms = args["endsAt"] as? Double ?? 0
+        start(BreakAttributes.ContentState(
+          endsAt: Date(timeIntervalSince1970: ms / 1000),
+          focus: args["focus"] as? Bool ?? false,
+          title: args["title"] as? String ?? "",
+          pausedSec: args["pausedSec"] as? Int))
       case "end":
         end()
       default:
@@ -23,9 +28,10 @@ enum BreakActivity {
   }
 
   @available(iOS 16.2, *)
-  private static func start(_ endsAt: Date) {
+  private static func start(_ state: BreakAttributes.ContentState) {
     guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
-    let content = ActivityContent(state: BreakAttributes.ContentState(endsAt: endsAt), staleDate: endsAt)
+    // 일시정지는 끝나는 시각이 없어 오래 둬도 낡지 않음
+    let content = ActivityContent(state: state, staleDate: state.pausedSec == nil ? state.endsAt : nil)
     if let a = Activity<BreakAttributes>.activities.first {
       Task { await a.update(content) }
       return
