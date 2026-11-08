@@ -82,7 +82,7 @@ Future<void> runMobile() async {
     } catch (_) {}
   }
 
-  await refreshLock();
+  refreshLock(); // 권한 확인이 최대 2초 걸릴 수 있어 앱 시작을 막지 않는다 (그동안 lockReady는 기본값 true)
 
   // 랭킹: 참여(닉네임 있음)했으면 점수·아바타가 바뀔 때마다 제출. 오프라인이면 다음 변경 때 다시.
   final ranking = RankingService();

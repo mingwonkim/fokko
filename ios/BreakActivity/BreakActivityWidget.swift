@@ -22,7 +22,8 @@ private extension BreakAttributes.ContentState {
   var paused: Bool { pausedSec != nil }
   var icon: String { !focus ? "cup.and.saucer.fill" : (paused ? "pause.fill" : "timer") }
   var head: String { !focus ? "휴식 중" : (paused ? "일시정지" : "집중 중") }
-  var sub: String { !focus ? "끝나면 다시 집중해요" : (title.isEmpty ? "다른 앱 말고 이것만" : title) }
+  /// 할 일 없이 집중하면 nil — 줄을 비운다
+  var sub: String? { !focus ? "끝나면 다시 집중해요" : (title.isEmpty ? nil : title) }
   var startedAt: Date { endsAt.addingTimeInterval(-Double(max(totalSec, 1))) }
   /// 앱 링과 같은 방향: 집중은 지난 만큼 차오르고, 휴식은 남은 만큼 남는다
   var pausedFraction: Double {
@@ -54,7 +55,9 @@ struct BreakActivityWidget: Widget {
             .font(.system(size: 46, weight: .bold, design: .rounded))
             .minimumScaleFactor(0.6)
             .lineLimit(1)
-          Text(s.sub).font(.subheadline.weight(.semibold)).lineLimit(1).opacity(0.85)
+          if let sub = s.sub {
+            Text(sub).font(.subheadline.weight(.semibold)).lineLimit(1).opacity(0.85)
+          }
         }
         Spacer(minLength: 0)
       }
@@ -73,7 +76,9 @@ struct BreakActivityWidget: Widget {
           clock(s).font(.title2.weight(.semibold)).multilineTextAlignment(.trailing)
         }
         DynamicIslandExpandedRegion(.bottom) {
-          Text(s.sub).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+          if let sub = s.sub {
+            Text(sub).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+          }
         }
       } compactLeading: {
         ring(s, size: 20, width: 3)

@@ -35,10 +35,12 @@ final class FocusLock: NSObject, FlutterPlugin {
     switch call.method {
     case "status":
       cleanupExpired()
-      result([
-        "authorized": AuthorizationCenter.shared.authorizationStatus == .approved,
-        "selectedCount": selectionCount(loadSelection()),
-      ])
+      Task { @MainActor in
+        result([
+          "authorized": await Self.isApproved(),
+          "selectedCount": self.selectionCount(self.loadSelection()),
+        ])
+      }
     case "authorize":
       Task { @MainActor in
         do {
@@ -62,6 +64,17 @@ final class FocusLock: NSObject, FlutterPlugin {
     default:
       result(FlutterMethodNotImplemented)
     }
+  }
+
+  /// 앱이 막 켜졌을 땐 승인돼 있어도 잠깐 notDetermined로 읽힌다 → 실제 값이 올 때까지 최대 2초 기다림
+  /// (켤 때마다 '앱 잠금이 꺼져 있어요'가 뜨고 자물쇠 화면에 들어가야 켜지던 문제: 실사용 11/08)
+  @MainActor
+  static func isApproved() async -> Bool {
+    let center = AuthorizationCenter.shared
+    for _ in 0..<20 where center.authorizationStatus == .notDetermined {
+      try? await Task.sleep(nanoseconds: 100_000_000)
+    }
+    return center.authorizationStatus == .approved
   }
 
   // MARK: 선택 앱 저장
