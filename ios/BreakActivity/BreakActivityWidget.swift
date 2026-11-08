@@ -111,11 +111,11 @@ struct BreakActivityWidget: Widget {
           }
         }
       } compactLeading: {
-        ringView(s, size: 20, width: 3)
+        badge(s, size: 26)
       } compactTrailing: {
         clock(s).frame(width: 44).multilineTextAlignment(.trailing).foregroundStyle(tint)
       } minimal: {
-        ringView(s, size: 20, width: 3)
+        badge(s, size: 36)
       }
     }
   }
@@ -134,6 +134,17 @@ func clock(_ s: BreakAttributes.ContentState) -> Text {
     return Text(String(format: "%d:%02d", sec / 60, sec % 60)).monospacedDigit()
   }
   return Text(timerInterval: Date()...max(s.endsAt, Date()), countsDown: true).monospacedDigit()
+}
+
+/// 작은 칸(StandBy 위 원·다이내믹 아일랜드)용: 칸을 꽉 채운 굵은 링 + 캐릭터 — 한눈에 Fokko로 보이고 눌러 펼치게
+func badge(_ s: BreakAttributes.ContentState, size: CGFloat) -> some View {
+  ZStack {
+    if let img = companionImage(s.companion) {
+      Image(uiImage: img).resizable().scaledToFit().padding(size * 0.15)
+    }
+    ringView(s, size: size, width: size * 0.13)
+  }
+  .frame(width: size, height: size)
 }
 
 /// 앱의 굵은 링. 진행 중엔 시스템 타이머 링이라 앱이 꺼져 있어도 차오른다.
