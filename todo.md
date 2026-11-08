@@ -206,3 +206,5 @@
 - [x] 스크린샷 8장 다시 찍음(iPhone·iPad·Android): 숲·바다·밤·일상 각 2장, 03 연속 배너 컷, 08 경쟁. 할 일 컷은 뺌
 - [ ] 사용자: 새 스크린샷 스토어 업로드 (iOS 1.1.0 심사 중이라 다음 버전 또는 승인 후), 폰 설치 확인
 - [ ] 프리뷰 영상은 다시 안 찍음 (스크립트의 탭 이름만 '경쟁'으로 수정)
+- [x] 이름 변경: GitHub mingwonkim/focus-one → fokko(옛 주소 자동 연결), 로컬 ~/CodingProjects/fokko, Orca 새로 등록·표시 이름 fokko. 번들 ID·패키지명·CI 산출물 이름은 그대로
+- [ ] 사용자: Orca에 남은 옛 'focus-one' 항목 지우기 (CLI에 삭제 명령 없음)
