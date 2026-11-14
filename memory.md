@@ -94,3 +94,4 @@
 - Xcode가 로그아웃이면 cloud signing이 'No Accounts'로 실패. API 키는 앱 관리 권한이라 cloud signing도 불가. 대신 API로 맥의 iPhone Distribution 인증서(CFCB75UTZP)를 쓰는 App Store 프로파일을 만들어 수동 서명 내보내기: Fokko AppStore / Fokko FocusMonitor AppStore / Fokko BreakActivity AppStore.
 - 순서: xcodebuild archive → exportArchive(signingStyle manual) → IPA 권한 확인(family-controls) → altool 업로드(API_PRIVATE_KEYS_DIR=~/.config/fokko) → tool/asc_release.py → asc_screenshots.py·asc_preview.py → 처리 완료 대기 → 빌드 연결 → asc_submit.py.
 
+- 2026-11-15 Play 비공개 테스트(개인 계정, D-U-N-S 포기). 접근성 서비스(앱 잠금) 선언에 '명시적 공개' 영상 필요 → 에뮬레이터로 lock_page 고지→설정 켜기 녹화, Drive 링크 공개. 스토어 그래픽은 AI 생성 애셋으로 라벨(캐릭터가 Higgsfield/codex 생성). Play 스크린샷은 2:1 이하라 iPhone 샷을 1080×2160에 맞춰 넣음(docs/mobile/store-assets/play).
