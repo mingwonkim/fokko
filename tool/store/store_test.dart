@@ -23,6 +23,7 @@ import 'package:focus_one/state/app_state.dart';
 const seed = String.fromEnvironment('SEED');
 const out = String.fromEnvironment('OUT');
 const fontDir = String.fromEnvironment('FONTS');
+const raw = bool.fromEnvironment('RAW'); // 홍보 문구·폰 테두리 없이 앱 화면만
 
 /// 기기: 캔버스 논리 크기 · 배율 · 앱 화면 크기 · 안전 영역
 typedef Device = ({String name, Size canvas, double ratio, Size screen, EdgeInsets safe});
@@ -258,7 +259,7 @@ void main() {
           textDirection: TextDirection.ltr,
           child: RepaintBoundary(
             key: key,
-            child: _Poster(d: d, scene: s.scene, title: title, sub: sub, child: _screen(s, d)),
+            child: raw ? _screen(s, d) : _Poster(d: d, scene: s.scene, title: title, sub: sub, child: _screen(s, d)),
           ),
         ));
         await _settle(tester);
