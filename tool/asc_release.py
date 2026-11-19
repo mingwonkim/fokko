@@ -26,7 +26,7 @@ versions = call("GET", f"/v1/apps/{APP}/appStoreVersions?limit=5")["data"]
 v = next((x for x in versions if x["attributes"]["versionString"] == version), None)
 if not v:
     v = call("POST", "/v1/appStoreVersions", {"data": {"type": "appStoreVersions",
-             "attributes": {"platform": "IOS", "versionString": version, "copyright": "2026 looin labs",
+             "attributes": {"platform": "IOS", "versionString": version, "copyright": "2026 olv.is",
                             "releaseType": "AFTER_APPROVAL"},
              "relationships": {"app": {"data": {"type": "apps", "id": APP}}}}})["data"]
 vid = v["id"]
