@@ -237,4 +237,9 @@
 [o] 03:10 Play 비공개 테스트 제출 — 앱 생성(com.looinlabs.fokko), 1.1.0(7) AAB(맥 업로드 키 CN=FocusOne), 앱 콘텐츠·등록정보·접근성 공개 영상, 테스터 '하루전 비공개테스터목록'(28명) → Google 검토 중
 - [ ] Play 검토 통과 후 테스터 12명 이상 참여 확인 → 14일 뒤 프로덕션 신청
 - [x] olv.is 사이트용 Fokko 자료 보내기 (11/19 사용자) — 스토어 이미지 도구에 RAW 모드(문구·테두리 없이 앱 화면만) 추가, 1320×2868 화면 8장을 ~/orca/workspaces/olvis/design/intake/fokko/ 에 넣고 info.md 갱신(대표 색·스토어 상태)
-- [ ] 약관·지원·초대 주소 looinlabs.com/fokko → olv.is/fokko (2026-11-21 코드·문서 교체, 새 주소 200). 남은 것: 카카오 앱(1639218) Web 플랫폼에 https://olv.is 추가(초대 링크용), 다음 버전 출시 때 ASC·Play 등록정보 지원·개인정보 주소 교체
+- [x] 약관·지원·초대 주소 looinlabs.com/fokko → olv.is/fokko — 코드·문서 교체, 카카오 웹 도메인 추가(olvis 세션), 1.1.1로 ASC 지원·개인정보·저작권 교체·제출(11/21)
+
+## 2026-11-21 — 1.1.1 출시 (olv.is 주소, olvis 세션 위임)
+- [x] 1.1.1+8 iOS 빌드·업로드·심사 제출 — 11/21 WAITING_FOR_REVIEW(자동 출시). 저작권 2026 olv.is, 지원 olv.is/fokko/, 앱 정보 개인정보 olv.is/fokko/privacy, 심사 연락 메일 olvis.labs@gmail.com, 설명 문의 메일도 교체. main 그대로(사용자 선택). flutter build ipa + 수동 프로파일 ExportOptions로 서명, altool 업로드
+- [x] 1.1.1+8 Android AAB → Play 비공개 테스트(Alpha) 트랙 — 11/21 Google 검토 전송(업로드 키 CN=FocusOne 확인). Play API 서비스 계정(harujon)은 업로드는 되나 commit 403 → Console 웹으로 올림. 출시 노트는 Android용(다이내믹 아일랜드·StandBy 빼고)
+- [x] olvis/rename-checklist.md 4-1 Fokko 줄 기록 — olvis fb1ab3d
