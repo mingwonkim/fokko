@@ -28,7 +28,7 @@ class RankingPage extends StatefulWidget {
 // 닉네임은 정해진 단어 조합에서만 고른다 — 자유 입력(사용자 생성 콘텐츠)이면 신고·차단 기능이 필요해서
 const _adjectives = ['졸린', '느긋한', '부지런한', '반짝이는', '조용한', '용감한', '꿈꾸는', '씩씩한', '포근한', '단단한'];
 
-final _privacyUrl = Uri.parse('https://looinlabs.com/fokko/privacy');
+final _privacyUrl = Uri.parse('https://olv.is/fokko/privacy');
 
 Widget _privacyLink(SceneStyle style) => Center(
       child: TextButton(

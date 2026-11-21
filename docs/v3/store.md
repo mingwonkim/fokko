@@ -78,9 +78,9 @@ Fokko는 산만해지기 쉬운 사람, 특히 ADHD인 사람을 위해 만든 �
 업데이트 문구: 성장하는 재미를 더했어요. 레벨과 성장 지도, 일일·주간 목표와 퀘스트, 연속일을 지켜 주는 얼음, 업적, 주간 리그가 생겼어요. 친구가 36종으로 늘었고, 집중하는 동안 화면 전체가 차올라요.
 
 ## URL
-- 지원: https://looinlabs.com/fokko/
-- 개인정보 처리방침: https://looinlabs.com/fokko/privacy
-- 데이터 삭제 안내 (Play 필수): https://looinlabs.com/fokko/privacy [확인: 삭제 방법 문단이 있음. Play가 별도 페이지를 요구하면 분리]
+- 지원: https://olv.is/fokko/
+- 개인정보 처리방침: https://olv.is/fokko/privacy
+- 데이터 삭제 안내 (Play 필수): https://olv.is/fokko/privacy [확인: 삭제 방법 문단이 있음. Play가 별도 페이지를 요구하면 분리]
 
 ## Google Play 앱 콘텐츠 답안 (사용자가 확인 후 제출)
 

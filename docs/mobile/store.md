@@ -52,9 +52,9 @@ Fokko는 산만해지기 쉬운 사람, 특히 ADHD인 사람을 위해 만든 �
 뽀모도로,공부,할일,포커스,백색소음,빗소리,카페소음,디지털디톡스,스터디,몰입,습관,루틴,캐릭터,수집,딴짓
 
 ## URL
-- 지원 URL: https://looinlabs.com/fokko/
+- 지원 URL: https://olv.is/fokko/
 - 마케팅 URL: (비워 둠)
-- 개인정보 처리방침 URL: https://looinlabs.com/fokko/privacy
+- 개인정보 처리방침 URL: https://olv.is/fokko/privacy
 
 ## 저작권
 2026 looin labs

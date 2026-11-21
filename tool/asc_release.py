@@ -39,7 +39,7 @@ call("PATCH", f"/v1/appStoreVersionLocalizations/{loc}", {"data": {"type": "appS
                     "keywords": limited("App Store 키워드"),
                     "promotionalText": limited("App Store 프로모션"),
                     "whatsNew": limited("업데이트 문구"),
-                    "supportUrl": "https://looinlabs.com/fokko/"}}})
+                    "supportUrl": "https://olv.is/fokko/"}}})
 print("문구 반영", len(description))
 
 old = call("GET", f"/v1/appStoreVersions/{version and vid}/appStoreReviewDetail")

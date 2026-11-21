@@ -9,7 +9,7 @@ import 'package:share_plus/share_plus.dart';
 const kakaoNativeKey = '6a8ada13600885965d103fff15c630f2';
 
 final storeUrl = Uri.parse('https://apps.apple.com/kr/app/id6821653231');
-final _siteUrl = Uri.parse('https://looinlabs.com/fokko'); // 카카오 앱 플랫폼에 등록한 도메인
+final _siteUrl = Uri.parse('https://olv.is/fokko'); // 카카오 앱 플랫폼에 등록한 도메인
 
 /// 카톡 카드 버튼이나 코드로 들어온 초대 (셸이 듣고 대결 화면을 연다)
 final pendingInvite = ValueNotifier<String?>(null);
