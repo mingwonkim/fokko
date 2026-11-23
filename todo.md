@@ -247,5 +247,4 @@
 ## 2026-11-24 — iOS 1.1.1 거절 대응
 - [x] 5.1.1(iv) 거절(11/23, iPad Air): 스크린타임 권한 안내 화면의 '나중에'로 권한 요청을 미룰 수 있음 → iOS는 '나중에' 제거·버튼 '계속'(Android는 Play 공개 고지라 유지). 빌드 9 업로드·연결, 심사 메모(계속·'경쟁' 탭) 갱신, 11/24 재제출 WAITING_FOR_REVIEW. 아이폰 9 설치. API 재제출은 버전이 READY_FOR_REVIEW가 된 뒤(웹 '심사 업데이트'→계속)에만 통과
 - [x] Play Alpha 8 (1.1.1) 검토 통과·배포 확인(11/24)
-- [ ] 참고: GitHub Actions Windows 빌드가 11/19(677be4f)부터 계속 실패 — 출시와 무관, 원인 미조사
-- [ ] GitHub Actions Windows 빌드 실패 고치기 (11/24 사용자 요청)
+- [x] GitHub Actions Windows 빌드 실패 고치기 — 원인: CI가 최신 Flutter 3.50.1을 받아 material.dart 폐기 안내 56개로 analyze 실패(11/14 da7ef33부터). CI를 맥과 같은 3.44.4로 고정(96e97c1) → Windows·Linux 통과
