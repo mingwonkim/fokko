@@ -243,3 +243,8 @@
 - [x] 1.1.1+8 iOS 빌드·업로드·심사 제출 — 11/21 WAITING_FOR_REVIEW(자동 출시). 저작권 2026 olv.is, 지원 olv.is/fokko/, 앱 정보 개인정보 olv.is/fokko/privacy, 심사 연락 메일 olvis.labs@gmail.com, 설명 문의 메일도 교체. main 그대로(사용자 선택). flutter build ipa + 수동 프로파일 ExportOptions로 서명, altool 업로드
 - [x] 1.1.1+8 Android AAB → Play 비공개 테스트(Alpha) 트랙 — 11/21 Google 검토 전송(업로드 키 CN=FocusOne 확인). Play API 서비스 계정(harujon)은 업로드는 되나 commit 403 → Console 웹으로 올림. 출시 노트는 Android용(다이내믹 아일랜드·StandBy 빼고)
 - [x] olvis/rename-checklist.md 4-1 Fokko 줄 기록 — olvis fb1ab3d
+
+## 2026-11-24 — iOS 1.1.1 거절 대응
+- [x] 5.1.1(iv) 거절(11/23, iPad Air): 스크린타임 권한 안내 화면의 '나중에'로 권한 요청을 미룰 수 있음 → iOS는 '나중에' 제거·버튼 '계속'(Android는 Play 공개 고지라 유지). 빌드 9 업로드·연결, 심사 메모(계속·'경쟁' 탭) 갱신, 11/24 재제출 WAITING_FOR_REVIEW. 아이폰 9 설치. API 재제출은 버전이 READY_FOR_REVIEW가 된 뒤(웹 '심사 업데이트'→계속)에만 통과
+- [x] Play Alpha 8 (1.1.1) 검토 통과·배포 확인(11/24)
+- [ ] 참고: GitHub Actions Windows 빌드가 11/19(677be4f)부터 계속 실패 — 출시와 무관, 원인 미조사

@@ -10,7 +10,7 @@ Ambient sound plays only while a focus session is running (not while idle or on 
 A screen recording from a physical iPhone is attached in App Review Information / the Resolution Center reply.
 
 APP LOCK (Screen Time / Family Controls)
-1. Focus tab → lock icon at the top right → "잠금 켜기" (Turn on).
+1. Focus tab → lock icon at the top right → "계속" (Continue). The explanation screen always leads straight to the Screen Time permission request; there is no button to postpone it (guideline 5.1.1(iv), fixed in build 9).
 2. Allow Screen Time access, select an app, tap "완료" (Done).
 3. Start a session of 15 minutes or longer (default 25). Opening the selected app shows the Screen Time shield.
 4. The shield is removed at the session end by the DeviceActivityMonitor extension, even if Fokko is closed.
@@ -28,7 +28,7 @@ OPTIONAL LEAGUE
 Growth tab "성장" > "리그" (League). It requires joining the optional ranking first. Each user competes in a small group by verified focus minutes. "리그에서 나가기" (Leave League) leaves it.
 
 OPTIONAL 1:1 DUEL
-Records tab "기록" > duel card. It requires the optional ranking. A friend is invited with an invite code shared through KakaoTalk or the share sheet.
+Competition tab "경쟁" > duel card. It requires the optional ranking. A friend is invited with an invite code shared through KakaoTalk or the share sheet.
 
 OPTIONAL RANKING
-Records tab "기록" → "랭킹" (Ranking) → tap "참여하기" (Join). A random nickname is generated from a fixed word list (dice button to change); there is no free-text input. This creates an anonymous account (no email/password). "랭킹에서 나가기" (Leave Ranking) → "나가기" permanently deletes the anonymous account and its server data. A privacy policy link is on the Ranking screen.
+Competition tab "경쟁" → "랭킹" (Ranking) → tap "참여하기" (Join). A random nickname is generated from a fixed word list (dice button to change); there is no free-text input. This creates an anonymous account (no email/password). "랭킹에서 나가기" (Leave Ranking) → "나가기" permanently deletes the anonymous account and its server data. A privacy policy link is on the Ranking screen.

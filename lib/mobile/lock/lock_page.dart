@@ -225,13 +225,15 @@ class _LockPageState extends State<LockPage> with WidgetsBindingObserver {
             width: double.infinity,
             height: MobileSize.cta,
             icon: Icons.lock_outline_rounded,
-            label: Platform.isAndroid ? '동의하고 설정 열기' : '잠금 켜기',
+            label: Platform.isAndroid ? '동의하고 설정 열기' : '계속',
             onTap: _authorized ? _pick : _turnOn,
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('나중에', style: TextStyle(color: style.textMuted)),
-          ),
+          // iOS 심사 5.1.1(iv): 권한 안내 뒤엔 바로 권한 요청으로 가야 해서 미루기 버튼을 두지 않는다
+          if (Platform.isAndroid)
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('나중에', style: TextStyle(color: style.textMuted)),
+            ),
         ],
       );
 
