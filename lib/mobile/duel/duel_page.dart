@@ -1,6 +1,6 @@
 // lib/mobile/duel/duel_page.dart
 // 친구 1:1 대결: 이번 주(월~일, KST) 집중 시간 승부. 기록 탭 요약 카드 + 전체 화면(초대·코드 입력·끊기).
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 

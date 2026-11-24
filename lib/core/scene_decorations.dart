@@ -2,7 +2,7 @@
 // 장면(숲/밤/바다)별 장식 요소 — 전부 시안(.dc.html)의 도형을 그대로 옮긴 것.
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'design_tokens.dart';
 

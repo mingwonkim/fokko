@@ -1,7 +1,7 @@
 // 꾸미기: 장면 구분 없는 풍경 하나, 모든 친구가 보이고 기본 친구 4종은 처음부터 고를 수 있다
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

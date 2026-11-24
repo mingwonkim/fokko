@@ -16,7 +16,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.44.4  # 맥 출시 빌드와 같은 버전. 3.47+는 material.dart 폐기 안내로 analyze 실패
+          flutter-version: 3.50.1  # 맥 출시 빌드와 같은 버전
           cache: true
 
       - name: 플랫폼 폴더 생성 (저장소에는 lib만 있음)
@@ -67,7 +67,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.44.4  # 맥 출시 빌드와 같은 버전. 3.47+는 material.dart 폐기 안내로 analyze 실패
+          flutter-version: 3.50.1  # 맥 출시 빌드와 같은 버전
           cache: true
 
       - name: 플랫폼 폴더 생성
@@ -130,7 +130,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.44.4  # 맥 출시 빌드와 같은 버전. 3.47+는 material.dart 폐기 안내로 analyze 실패
+          flutter-version: 3.50.1  # 맥 출시 빌드와 같은 버전
           cache: true
 
       - name: 플랫폼 폴더 생성

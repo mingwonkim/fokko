@@ -1,6 +1,6 @@
 // lib/mobile/focus/stat_bar.dart
 // 상단 스탯: 레벨 / 연속일 / 물방울 / 오늘 집중·목표. 누르면 연속일·목표 화면으로.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../core/design_tokens.dart';
 import '../../state/app_state.dart';

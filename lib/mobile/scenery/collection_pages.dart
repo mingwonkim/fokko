@@ -1,6 +1,6 @@
 // lib/mobile/scenery/collection_pages.dart
 // 풍경 탭에서 들어가는 보관함 · 도감 · 상점
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 

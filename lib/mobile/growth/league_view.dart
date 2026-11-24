@@ -1,7 +1,7 @@
 // lib/mobile/growth/league_view.dart
 // 성장 탭 → 리그: 참여 안내, 등급, 이번 주 조 순위, 지난 주 결과.
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/design_tokens.dart';

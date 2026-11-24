@@ -1,6 +1,6 @@
 // test/scene_render_test.dart
 // 세 장면(숲/밤/바다)에서 미니 위젯·확장 패널이 오버플로/페인트 예외 없이 렌더링되는지 확인.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

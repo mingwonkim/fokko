@@ -1,7 +1,7 @@
 // lib/mobile/growth/growth_pages.dart
 // 상단 스탯에서 들어가는 목표 설정 · 연속일 화면 (docs/v3/app-design-spec.md §3)
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 

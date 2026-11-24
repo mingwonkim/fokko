@@ -1,7 +1,7 @@
 // 폰 탭(집중·할 일·기록) 렌더: SE·Pro Max 크기, 3장면, 큰 글자에서 오버플로/예외 0
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

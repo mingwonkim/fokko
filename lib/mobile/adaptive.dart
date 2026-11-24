@@ -1,6 +1,6 @@
 // lib/mobile/adaptive.dart
 // iPad 대응: 폰은 그대로, 넓은 화면은 가운데 최대 폭
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../core/design_tokens.dart';
 

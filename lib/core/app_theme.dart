@@ -1,5 +1,5 @@
 // lib/core/app_theme.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'design_tokens.dart';
 
 /// Apple HIG 스타일 테마.

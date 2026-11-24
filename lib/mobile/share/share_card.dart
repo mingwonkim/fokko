@@ -2,7 +2,7 @@
 // 자랑하기: 칭호 테두리 아바타 + 닉네임 + 이번 주/누적 집중을 4:5 카드 이미지로 만들어 공유 시트로.
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';

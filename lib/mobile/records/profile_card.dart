@@ -1,6 +1,6 @@
 // lib/mobile/records/profile_card.dart
 // 기록 탭 맨 위 프로필: 칭호 테두리 아바타 · 닉네임 · 칭호 · 다음 칭호까지 · 명예의 전당 · 자랑하기.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/design_tokens.dart';

@@ -3,7 +3,7 @@
 // (1~3위 시상대 + 지난 기간 1~3위 + 칭호 테두리 아바타).
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

@@ -1,7 +1,7 @@
 // 잠금을 켜 뒀는데 권한이 꺼지면 '켜짐'으로 보이지 않고, 시작할 때 알려 준다
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

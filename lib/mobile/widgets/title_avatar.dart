@@ -2,7 +2,7 @@
 // 칭호 테두리 아바타: 가운데 친구 그림 + 칭호별 링(색·빛·회전·별). 프로필·랭킹·승급·공유 카드 공통.
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../core/design_tokens.dart';
 import '../../models/focus_title.dart';

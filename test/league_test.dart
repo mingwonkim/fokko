@@ -1,7 +1,7 @@
 // 리그: 화면 값 파싱·승강 구역, 세션 예약·제출 재시도, 리그 화면
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

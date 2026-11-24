@@ -1,7 +1,7 @@
 // 차오름 높이: 시작은 화면 아래, 끝은 화면 위까지 빈틈 없이
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 

@@ -1,6 +1,6 @@
 // lib/mobile/growth/companion_page.dart
 // 친구 성장: 함께 끝까지 집중한 분으로 받침과 후광이 자란다. 새 그림 없이 기존 그림 + 코드.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/design_tokens.dart';

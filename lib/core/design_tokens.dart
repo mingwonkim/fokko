@@ -1,7 +1,7 @@
 // lib/core/design_tokens.dart
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 디자인 토큰. 하드코딩 색상/매직넘버 금지 — 반드시 여기서 참조한다.
 /// 디자인 언어: v2 — Tiimo 집중 화면 레퍼런스 + 링 안 장면 일러스트 (docs/v2/).

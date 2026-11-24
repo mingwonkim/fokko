@@ -1,7 +1,7 @@
 // 목표·연속일 화면: 작은 폰·큰 글자에서 넘침 없고, 누르면 목표가 바뀐다
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 

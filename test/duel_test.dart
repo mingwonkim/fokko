@@ -1,7 +1,7 @@
 // 1:1 대결: 마감일 계산 · 서버 오류 문구 · 대결 카드/화면 렌더(가짜 서버) — 예외 0
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
