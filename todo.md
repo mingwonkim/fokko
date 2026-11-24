@@ -249,4 +249,4 @@
 - [x] Play Alpha 8 (1.1.1) 검토 통과·배포 확인(11/24)
 - [x] GitHub Actions Windows 빌드 실패 고치기 — 원인: CI가 최신 Flutter 3.50.1을 받아 material.dart 폐기 안내 56개로 analyze 실패(11/14 da7ef33부터). CI를 맥과 같은 3.44.4로 고정(96e97c1) → Windows·Linux 통과
 - [x] Flutter 최신으로 올리기(11/24 사용자) — brew로 3.50.1, material.dart → material_ui 패키지(59개 파일 import 교체), CI도 3.50.1 고정. analyze 0·test 169 통과(0f5eb74)
-- [ ] 올린 Flutter로 앱 다시 빌드해 스토어에 올리기 — iOS 심사 중인 빌드 교체, Play Alpha
+- [ ] 올린 Flutter로 앱 다시 빌드해 스토어에 올리기 — iOS 1.1.1(10) 업로드(첫 시도 ExitFailure 31은 재시도로 통과), 심사 취소→빌드 10 연결→재제출 WAITING_FOR_REVIEW(제출 a12f1493). Android: Flutter 3.50이 Gradle 9.3.1·AGP 9.1.1 이상 요구 → 올려서 재빌드 중
