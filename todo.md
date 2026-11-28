@@ -250,3 +250,6 @@
 - [x] GitHub Actions Windows 빌드 실패 고치기 — 원인: CI가 최신 Flutter 3.50.1을 받아 material.dart 폐기 안내 56개로 analyze 실패(11/14 da7ef33부터). CI를 맥과 같은 3.44.4로 고정(96e97c1) → Windows·Linux 통과
 - [x] Flutter 최신으로 올리기(11/24 사용자) — brew로 3.50.1, material.dart → material_ui 패키지(59개 파일 import 교체), CI도 3.50.1 고정. analyze 0·test 169 통과(0f5eb74)
 - [x] 올린 Flutter로 앱 다시 빌드해 스토어에 올리기 — iOS 1.1.1(10): 심사 취소→빌드 10 연결→재제출 WAITING_FOR_REVIEW(제출 a12f1493, 첫 업로드 ExitFailure 31은 재시도로 통과). Android: Flutter 3.50이 Gradle 9.3.1·AGP 9.1.1 이상 요구해 올림(886fe29), Alpha 10(1.1.1) Google 검토 전송(출시 노트는 8에서 복사). 아이폰 10 설치
+
+## 2026-11-28 — 아이디어(사용자, brainrot 세션에서 전달)
+- [ ] 잠수 대결 콘셉트 검토 — 너구리나 펭귄이 잠수하며 집중 시간이 갈수록 지쳐 가고, 주변 캐릭터들은 하나둘 포기하고 물 위로 올라감. 집중 시간을 끝까지 지키면 잠수 대결에서 우승. 아직 아이디어 단계로 만들지 않음. 기존 '경쟁' 탭·친구 캐릭터(새싹사슴·달토끼·물결고래·라떼멍)와 어떻게 이을지 정해야 함. (같은 날 BrainFresh는 App Store 4.3 스팸 거절로 '썩는 뇌'를 '운석 막기' 게임형 콘셉트로 바꾸는 중 — 두 앱 콘셉트가 겹치지 않게)
